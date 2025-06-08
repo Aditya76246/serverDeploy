@@ -13,7 +13,7 @@ export default function App() {
       job: ""
     },
     onSubmit: (data) => {
-      axios.post("http://127.0.0.1:7000/add-data", data);
+      axios.post("https://serverdeploy-3.onrender.com/add-data", data);
       alert("User Data Add Success fully");
     }
   })
