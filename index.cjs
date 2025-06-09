@@ -12,6 +12,7 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
 app.post("/add-data", (req, res) => {
+    
     let data = {
         name: req.body.name,
         age: parseInt(req.body.age),
@@ -46,7 +47,9 @@ app.get("/get-data", (req, res) => {
 });
 
 app.get("/get-data/:name", (req, res) => {
+
     let name = req.params.name;
+
     mongoClient.connect(process.env.MONGO_URL)
     .then(clientObject => {
         let database = clientObject.db("form-data");
@@ -55,6 +58,46 @@ app.get("/get-data/:name", (req, res) => {
         .then(documents => {
             res.send(documents);
             res.end();
+        });
+    });
+});
+
+app.put("/update-data/:name", (req, res) => {
+
+    let name = req.params.name;
+
+    let data = {
+        name: req.body.name,
+        age: parseInt(req.body.age),
+        gender: req.body.gender,
+        city: req.body.city,
+        job: req.body.job
+    }
+
+    mongoClient.connect(process.env.MONGO_URL)
+    .then(clientObject => {
+        let database = clientObject.db("form-data");
+        database.collection("client-data")
+        .updateOne({name: name}, {$set: data})
+        .then(() => {
+            console.log("Data Updated");
+            res.send();
+        });
+    });
+});
+
+app.delete("/delete-data/:name", (req, res) => {
+
+    let name = req.params.name;
+
+    mongoClient.connect(process.env.MONGO_URL)
+    .then(clientObject => {
+        let database = clientObject.db("form-data");
+        database.collection("client-data")
+        .deleteOne({name: name})
+        .then(() => {
+            console.log("Data Deleted");
+            res.send();
         });
     });
 });
