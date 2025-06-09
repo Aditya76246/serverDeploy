@@ -45,4 +45,18 @@ app.get("/get-data", (req, res) => {
     });
 });
 
+app.get("/get-data/:name", (req, res) => {
+    let name = req.params.name;
+    mongoClient.connect(process.env.MONGO_URL)
+    .then(clientObject => {
+        let database = clientObject.db("form-data");
+        database.collection("client-data")
+        .findOne({name: name})
+        .then(documents => {
+            res.send(documents);
+            res.end();
+        });
+    });
+});
+
 app.listen(PORT, () => console.log(`Setver Started at PORT: ${PORT}`));
