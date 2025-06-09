@@ -19,7 +19,6 @@ app.post("/add-data", (req, res) => {
         city: req.body.city,
         job: req.body.job
     }
-    // mongoClient.connect("mongodb://127.0.0.1:27017")
     mongoClient.connect(process.env.MONGO_URL)
     .then(clientObject => {
         let database = clientObject.db("form-data");
@@ -28,6 +27,20 @@ app.post("/add-data", (req, res) => {
         .then(() => {
             console.log("data inserted");
             res.send();
+        });
+    });
+});
+
+app.get("/get-data", (req, res) => {
+    mongoClient.connect(process.env.MONGO_URL)
+    .then(clientObject => {
+        let database = clientObject.db("form-data");
+        database.collection("client-data")
+        .find({})
+        .toArray()
+        .then(documents => {
+            res.send(documents);
+            res.end();
         });
     });
 });
